@@ -1,40 +1,27 @@
-<template lang="pug">
-v-app
-  router-view
+<template lang='pug'>
+.auth-container
+  v-btn(flat small v-if="!isLoggedIn" @click="showLoginDialog") Log In
+  v-btn(flat small v-if="!isLoggedIn" @click="showRegisterDialog") Register
+  v-btn(flat small v-if="isLoggedIn" @click="doLogout") Log Out
+  v-dialog(max-width="500px", v-model="showingAuthDialog", @keydown.esc="showingAuthDialog = false")
+    auth-container(@login="showingAuthDialog = false", @register="showingAuthDialog = false")
 </template>
 
 <script>
-import LayoutView from '@/views/LayoutView';
-import { authDialogModes } from '@/store/auth';
 import { mapMutations, mapActions, mapState, mapGetters } from 'vuex';
+import AuthContainer from '@/components/AuthContainer';
+import { authDialogModes } from '@/store/auth';
+
 
 export default {
-  name: 'App',
+  name: 'Header',
   components: {
-    LayoutView
+    AuthContainer,
   },
   data() {
     return {
       showingAuthDialog: this.authDialogVisible,
-      app_name: "Slicer",
-      tabs: ['Browse', 'Extensions'],
-      tabItems: ['extensionsCatalog', 'extensionsManager'],
     };
-  },
-  created () {
-    var filters = {};
-    Event.$on('release-selected', (data) => {
-      filters.release_id = data._id;
-      Event.$emit('extensions-filters-updated', filters);
-    });
-    Event.$on('OS-selected', (data) => {
-      filters.os = data;
-      Event.$emit('extensions-filters-updated', filters);
-    });
-    Event.$on('arch-selected', (data) => {
-      filters.arch = data;
-      Event.$emit('extensions-filters-updated', filters);
-    });
   },
   computed: {
     ...mapState('auth', ['authDialogMode', 'authDialogVisible']),
@@ -63,12 +50,14 @@ export default {
     ...mapActions('auth', ['logout']),
   },
 };
+
 </script>
 
-<style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  cursor default
-  background-color #ffffff
-
+<style>
+.extensions{
+  display: inline-block;
+  width: 70%;
+  text-align: center;
+  vertical-align: top;
+}
 </style>

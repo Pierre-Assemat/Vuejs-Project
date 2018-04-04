@@ -1,13 +1,38 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App'
+/* eslint-disable */
+import Vue from 'vue';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
 
-Vue.config.productionTip = false
+import App from './App';
+import { setApiUrl } from './rest';
+import store from './store';
+import router from './router';
 
-/* eslint-disable no-new */
+Vue.config.productionTip = false;
+Vue.use(Vuetify);
+
+setApiUrl(document.getElementById('girder-api-root').getAttribute('url'));
+// onResponse((resp) => {
+//   if (resp.response && resp.response.status === 401 && !store.state.auth.authDialogVisible) {
+//     store.dispatch('auth/showAuthDialog', {});
+//   }
+//
+//   // TODO if auth.isLoggedIn, we know our session has expired. May want to take a different action
+//   // TODO Handle 500 errors (show a toast perhaps)
+//   return Promise.reject(resp);
+// });
+//
+// store.commit('auth/setToken', getTokenFromCookie());
+// store.dispatch('auth/whoami').then(() =>
+
+window.Event = new Vue();
+
 new Vue({
   el: '#app',
+  store,
+  router,
   components: { App },
-  template: '<App/>'
-})
+  template: '<App/>',
+});
