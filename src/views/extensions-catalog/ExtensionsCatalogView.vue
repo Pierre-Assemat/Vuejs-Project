@@ -5,15 +5,18 @@
     filter-component
     release-available-component(header="Releases")
     list-resource-view(@resource-list-selected="filterByCategory", header="Categories", :resources="categories")
-  .extensions(v-if="filteredExtensions.length !== 0")
-    extension-component(
-      @detailed-extension-info="detailedExtensionInfo",
-      v-for="extension in filteredExtensions",
-      :key="extension.id",
-      :extension="extension",
-      :application="application")
-  .no-extensions(v-else)
-    span No extensions found...
+  .extensions-container
+    .extensions-list(v-if="filteredExtensions.length !== 0 && isLoading === false")
+      extension-component(
+        @detailed-extension-info="detailedExtensionInfo",
+        v-for="extension in filteredExtensions",
+        :key="extension.id",
+        :extension="extension",
+        :application="application")
+    .no-extensions(v-else-if="isLoading === false")
+      span {{ msg_no_extension }}
+    .loading(v-else)
+      v-progress-circular(indeterminate, color="primary", :size="50")
 </template>
 
 <script>
@@ -34,10 +37,11 @@ export default {
     SearchComponent,
   },
 
-  props: ['header', 'extensions', 'application'],
+  props: ['header', 'extensions', 'application', 'isLoading'],
 
   data() {
     return {
+      msg_no_extension: 'No extensions found...',
       results: [],
       app_id: '',
       currentCategory: '',
@@ -103,16 +107,12 @@ export default {
   margin-top 30px
   display flex
   flex-wrap wrap
-
 .filters-extensions
   width 10%
-.extensions
+.extensions-container
   width 90%
   text-align center
-.no-extensions
-  width 90%
-  text-align center
+.no-extensions, .loading
   font-size 2em
   padding-top 20px
-
 </style>

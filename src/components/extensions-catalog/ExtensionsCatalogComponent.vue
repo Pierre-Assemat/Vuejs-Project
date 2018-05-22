@@ -1,5 +1,9 @@
 <template lang="pug">
-extensions-catalog-view(v-if="isLoggedIn", :extensions="extensions", :application="application")
+extensions-catalog-view(
+  v-if="isLoggedIn",
+  :extensions="extensions",
+  :application="application",
+  :isLoading="isLoading")
 </template>
 
 <script>
@@ -21,6 +25,7 @@ export default {
   },
   data() {
     return {
+      isLoading: true,
       application: {},
       filters: {},
       extensions: [],
@@ -67,11 +72,13 @@ export default {
       });
     },
     getExtensions(filters) {
+      this.isLoading= true;
       return rest.get(`/app/${ObjectID(this.application.id)}/extension`, {
         params: filters
       }).then((resp) => {
         this.extensions = resp.data;
         Event.$emit('extensions-fetched', this.extensions);
+        this.isLoading = false;
       });
     },
   },
